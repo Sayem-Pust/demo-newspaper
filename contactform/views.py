@@ -26,7 +26,6 @@ def contact_add(request):
     today = str(year) + "/" + str(month) + "/" + str(day)
     time = str(now.hour) + ":" + str(now.minute)
 
-
     if request.method == 'POST':
         name = request.POST.get('name')
         email = request.POST.get('email')
