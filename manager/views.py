@@ -10,11 +10,33 @@ from trending.models import Trending
 
 
 def manager_list(request):
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser': perm = 1
+
+    if perm == 0:
+        error = "Access Denied"
+        return render(request, 'back/error.html', {'error': error})
     manager = Manager.objects.all()
     return render(request, 'back/manager_list.html', {'manager': manager})
 
 
 def manager_del(request, pk):
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser': perm = 1
+
+    if perm == 0:
+        error = "Access Denied"
+        return render(request, 'back/error.html', {'error': error})
     manager = Manager.objects.get(pk=pk)
     b = User.objects.filter(username=manager.utxt)
     b.delete()
@@ -23,12 +45,34 @@ def manager_del(request, pk):
 
 
 def manager_group(request):
-    group = Group.objects.all()
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser' : perm = 1
+
+    if perm == 0:
+        error = "Access Denied"
+        return render(request, 'back/error.html', {'error': error})
+    group = Group.objects.all().exclude(name="masteruser")
 
     return render(request, 'back/manager_group.html', {'group': group})
 
 
 def manager_group_add(request):
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser': perm = 1
+
+    if perm == 0:
+        error = "Access Denied"
+        return render(request, 'back/error.html', {'error': error})
     if request.method == 'POST':
         name = request.POST.get('name')
         if name != "":
@@ -40,6 +84,17 @@ def manager_group_add(request):
 
 
 def manager_group_del(request, name):
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser': perm = 1
+
+    if perm == 0:
+        error = "Access Denied"
+        return render(request, 'back/error.html', {'error': error})
     b = Group.objects.filter(name=name)
     b.delete()
 
@@ -47,6 +102,17 @@ def manager_group_del(request, name):
 
 
 def users_groups(request, pk):
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser': perm = 1
+
+    if perm == 0:
+        error = "Access Denied"
+        return render(request, 'back/error.html', {'error': error})
     manager = Manager.objects.get(pk=pk)
     user = User.objects.get(username=manager.utxt)
     ugroup = []
@@ -58,6 +124,17 @@ def users_groups(request, pk):
 
 
 def add_users_to_groups(request, pk):
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser': perm = 1
+
+    if perm == 0:
+        error = "Access Denied"
+        return render(request, 'back/error.html', {'error': error})
     if request.method == 'POST':
         gname = request.POST.get('gname')
         group = Group.objects.get(name=gname)
@@ -68,8 +145,37 @@ def add_users_to_groups(request, pk):
 
 
 def del_users_to_groups(request, pk, name):
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser': perm = 1
+
+    if perm == 0:
+        error = "Access Denied"
+        return render(request, 'back/error.html', {'error': error})
     group = Group.objects.get(name=name)
     manager = Manager.objects.get(pk=pk)
     user = User.objects.get(username=manager.utxt)
     user.groups.remove(group)
     return redirect('users_groups', pk=pk)
+
+
+def manager_perms(request):
+
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser' : perm = 1
+
+    if perm == 0:
+        error = "Access Denied"
+        return render(request, 'back/error.html', {'error': error})
+    perms = Permission.objects.all()
+
+    return render(request, 'back/manager_perms.html', {'perms': perms})
