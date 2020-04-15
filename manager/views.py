@@ -7,6 +7,7 @@ from cat.models import Cat
 from subcat.models import SubCat
 from django.contrib.auth import authenticate, login, logout
 from trending.models import Trending
+from django.contrib.contenttypes.models import ContentType
 
 
 def manager_list(request):
@@ -51,7 +52,7 @@ def manager_group(request):
     # login check end
     perm = 0
     for i in request.user.groups.all():
-        if i.name == 'masteruser' : perm = 1
+        if i.name == 'masteruser': perm = 1
 
     if perm == 0:
         error = "Access Denied"
@@ -164,14 +165,13 @@ def del_users_to_groups(request, pk, name):
 
 
 def manager_perms(request):
-
     # login check start
     if not request.user.is_authenticated:
         return redirect('mylogin')
     # login check end
     perm = 0
     for i in request.user.groups.all():
-        if i.name == 'masteruser' : perm = 1
+        if i.name == 'masteruser': perm = 1
 
     if perm == 0:
         error = "Access Denied"
@@ -179,3 +179,42 @@ def manager_perms(request):
     perms = Permission.objects.all()
 
     return render(request, 'back/manager_perms.html', {'perms': perms})
+
+
+def manager_perms_del(request, name):
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser': perm = 1
+
+    if perm == 0:
+        error = "Access Denied"
+        return render(request, 'back/error.html', {'error': error})
+    perms = Permission.objects.filter(name=name)
+    perms.delete()
+
+    return redirect('manager_perms')
+
+
+def manager_perms_add(request):
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser': perm = 1
+
+    if perm == 0:
+        error = "Access Denied"
+        return render(request, 'back/error.html', {'error': error})
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        content_type = ContentType.objects.get(app_label='main', model='main')
+        permission = Permission.objects.create(codename='test_perms',name='test',content_type=content_type)
+
+    return redirect('manager_perms')

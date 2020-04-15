@@ -11,5 +11,7 @@ urlpatterns = [
     url(r'^panel/manager/addtogroup/(?P<pk>\d+)/$', views.add_users_to_groups, name='add_users_to_groups'),
     url(r'^panel/manager/delgroup/(?P<pk>\d+)/(?P<name>.*)/$', views.del_users_to_groups, name='del_users_to_groups'),
     url(r'^panel/manager/perms/$', views.manager_perms, name='manager_perms'),
+    url(r'^panel/manager/perms/del/(?P<name>.*)/$', views.manager_perms_del, name='manager_perms_del'),
+    url(r'^panel/manager/perms/add/$', views.manager_perms_add, name='manager_perms_add'),
 
 ]
