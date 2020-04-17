@@ -13,5 +13,7 @@ urlpatterns = [
     url(r'^panel/manager/perms/$', views.manager_perms, name='manager_perms'),
     url(r'^panel/manager/perms/del/(?P<name>.*)/$', views.manager_perms_del, name='manager_perms_del'),
     url(r'^panel/manager/perms/add/$', views.manager_perms_add, name='manager_perms_add'),
+    url(r'^panel/manager/perms/show/(?P<pk>\d+)/$', views.users_perms, name='users_perms'),
+    url(r'^panel/manager/delperm/(?P<pk>\d+)/(?P<name>.*)/$', views.users_perms_del, name='users_perms_del'),
 
 ]

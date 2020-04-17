@@ -214,7 +214,54 @@ def manager_perms_add(request):
 
     if request.method == 'POST':
         name = request.POST.get('name')
-        content_type = ContentType.objects.get(app_label='main', model='main')
-        permission = Permission.objects.create(codename='test_perms',name='test',content_type=content_type)
+        cname = request.POST.get('cname')
+        if len(Permission.objects.filter(codename=cname)) == 0:
+            content_type = ContentType.objects.get(app_label='main', model='main')
+            permission = Permission.objects.create(codename=cname, name=name, content_type=content_type)
+        else:
+            error = "This Code name used before"
+            return render(request, 'back/error.html', {'error': error})
 
     return redirect('manager_perms')
+
+
+def users_perms(request, pk):
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser': perm = 1
+
+    if perm == 0:
+        error = "Access Denied"
+        return render(request, 'back/error.html', {'error': error})
+    manager = Manager.objects.get(pk=pk)
+    user = User.objects.get(username=manager.utxt)
+    permission = Permission.objects.filter(user=user)
+    uperms = []
+    for i in permission:
+        uperms.append(i.name)
+
+    return render(request, 'back/users_perms.html', {'uperms': uperms, 'pk': pk})
+
+
+def users_perms_del(request, pk, name):
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser': perm = 1
+
+    if perm == 0:
+        error = "Access Denied"
+        return render(request, 'back/error.html', {'error': error})
+    manager = Manager.objects.get(pk=pk)
+    user = User.objects.get(username=manager.utxt)
+    permission = Permission.objects.get(name=name)
+    user.user_permissions.remove(permission)
+
+    return redirect('users_perms', pk=pk)
