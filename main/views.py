@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group, Permission
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Main
@@ -48,6 +48,15 @@ def panel(request):
     if not request.user.is_authenticated:
         return redirect('mylogin')
     # login check end
+
+    perm = 0
+    perms = Permission.objects.filter(user=request.user)
+    for i in perms:
+        if i.codename == "master_user": perm = 1
+
+    if perm == 0:
+        error = "Access Denied"
+        return render(request, 'back/error.html', {'error': error})
     return render(request, 'back/home.html')
 
 

@@ -246,7 +246,7 @@ def users_perms(request, pk):
 
     perms = Permission.objects.all()
 
-    return render(request, 'back/users_perms.html', {'uperms': uperms, 'pk': pk, 'perms':perms})
+    return render(request, 'back/users_perms.html', {'uperms': uperms, 'pk': pk, 'perms': perms})
 
 
 def users_perms_del(request, pk, name):
@@ -307,5 +307,49 @@ def groups_perms(request, name):
 
     group = Group.objects.get(name=name)
     perms = group.permissions.all()
+    allperms = Permission.objects.all()
 
-    return render(request, 'back/groups_perms.html', {'perms':perms})
+    return render(request, 'back/groups_perms.html', {'perms': perms, 'name': name, 'allperms': allperms})
+
+
+def groups_perms_del(request, gname, name):
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser': perm = 1
+
+    if perm == 0:
+        error = "Access Denied"
+        return render(request, 'back/error.html', {'error': error})
+
+    group = Group.objects.get(name=gname)
+    perm = Permission.objects.get(name=name)
+    group.permissions.remove(perm)
+
+    return redirect('groups_perms', name=gname)
+
+
+def groups_perms_add(request, name):
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser': perm = 1
+
+    if perm == 0:
+        error = "Access Denied"
+        return render(request, 'back/error.html', {'error': error})
+
+    if request.method == 'POST':
+        pname = request.POST.get('pname')
+
+        group = Group.objects.get(name=name)
+        perm = Permission.objects.get(name=pname)
+        group.permissions.add(perm)
+
+    return redirect('groups_perms', name=name)
