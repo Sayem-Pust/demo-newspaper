@@ -41,7 +41,17 @@ def news_list(request):
     if not request.user.is_authenticated:
         return redirect('mylogin')
     # login check end
-    news = News.objects.all()
+
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser': perm = 1
+
+    if perm == 0:
+        news = News.objects.filter(writer=request.user)
+
+    else:
+        news = News.objects.all()
+
     return render(request, 'back/news_list.html', {'news': news})
 
 
@@ -93,7 +103,7 @@ def news_add(request):
                     ocatid = SubCat.objects.get(pk=newsid).catid
 
                     b = News(name=newstitle, short_txt=newstxtshort, body_txt=newstxt, date=today, picname=filename,
-                             picurl=url, writer="-",
+                             picurl=url, writer=request.user,
                              catname=newsname, catid=newsid, show=0, time=time, ocatid=ocatid, tag=tag)
                     b.save()
                     count = len(News.objects.filter(ocatid=ocatid))
@@ -125,6 +135,17 @@ def news_delete(request, pk):
     if not request.user.is_authenticated:
         return redirect('mylogin')
     # login check end
+
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser': perm = 1
+
+    if perm == 0:
+        a = News.objects.get(pk=pk).writer
+        if str(a) != str(request.user):
+            error = "Access Denied"
+            return render(request, 'back/error.html', {'error': error})
+
     try:
 
         b = News.objects.get(pk=pk)
@@ -154,6 +175,18 @@ def news_edit(request, pk):
     if len(News.objects.filter(pk=pk)) == 0:
         error = "News not found"
         return render(request, 'back/error.html', {'error': error})
+
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == 'masteruser': perm = 1
+
+    if perm == 0:
+        a = News.objects.get(pk=pk).writer
+        if str(a) != str(request.user):
+            error = "Access Denied"
+            return render(request, 'back/error.html', {'error': error})
+
+
     news = News.objects.get(pk=pk)
     cat = SubCat.objects.all()
     if request.method == 'POST':

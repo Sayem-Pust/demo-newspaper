@@ -59,7 +59,9 @@
                                                 <div class="btn-group">
                                                     <a href="{% url 'news_edit' pk=cc.pk %}" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil">Edit</i></a>
                                                     <a href="{% url 'news_delete' pk=cc.pk %}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger"><i class="fa fa-times">Delete</i></a>
+                                                    {% if perms.main.masteruser %}
                                                     <a href="{% url 'news_publish' pk=cc.pk %}" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil">Publish</i></a>
+                                                    {% endif %}
                                                 </div>
                                             </td>
                                         </tr>
