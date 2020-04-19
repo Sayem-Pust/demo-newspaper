@@ -33,7 +33,7 @@ def news_detail(request, word):
 
     return render(request, 'front/news_detail.html',
                   {'site': site, 'news': news, 'cat': cat, 'subcat': subcat, 'lastnews': lastnews, 'shownews': shownews,
-                   'popnews': popnews, 'popnews2': popnews2, 'tag': tag, 'trending':trending})
+                   'popnews': popnews, 'popnews2': popnews2, 'tag': tag, 'trending': trending})
 
 
 def news_list(request):
@@ -183,7 +183,6 @@ def news_edit(request, pk):
                     b = News.objects.get(pk=pk)
                     fss = FileSystemStorage()
                     fss.delete(b.picname)
-
                     b.name = newstitle
                     b.short_txt = newstxtshort
                     b.body_txt = newstxt
@@ -192,6 +191,7 @@ def news_edit(request, pk):
                     b.catname = newsname
                     b.catid = newsid
                     b.tag = tag
+                    b.act = 0
                     b.save()
                     return redirect(news_list)
                 else:
@@ -214,6 +214,21 @@ def news_edit(request, pk):
             b.catname = newsname
             b.catid = newsid
             b.tag = tag
+            b.act = 0
             b.save()
             return redirect(news_list)
     return render(request, 'back/news_edit.html', {'pk': pk, 'news': news, 'cat': cat})
+
+
+def news_publish(request, pk):
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+
+    news = News.objects.get(pk=pk)
+    news.act = 1
+    news.save()
+
+    return redirect('news_list')
+
