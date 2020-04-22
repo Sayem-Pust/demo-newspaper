@@ -6,6 +6,7 @@ import datetime
 from subcat.models import SubCat
 from cat.models import Cat
 from trending.models import Trending
+import random
 
 
 # Create your views here.
@@ -73,6 +74,15 @@ def news_add(request):
 
     today = str(year) + "/" + str(month) + "/" + str(day)
     time = str(now.hour) + ":" + str(now.minute)
+    date = str(year) + str(month) + str(day)
+    randint = str(random.randint(1000, 9999))
+    rand = date + randint
+    rand = int(rand)
+
+    while len(News.objects.filter(rand=rand)) != 0 :
+        randint = str(random.randint(1000, 9999))
+        rand = date + randint
+        rand = int(rand)
 
     cat = SubCat.objects.all()
 
@@ -104,7 +114,7 @@ def news_add(request):
 
                     b = News(name=newstitle, short_txt=newstxtshort, body_txt=newstxt, date=today, picname=filename,
                              picurl=url, writer=request.user,
-                             catname=newsname, catid=newsid, show=0, time=time, ocatid=ocatid, tag=tag)
+                             catname=newsname, catid=newsid, show=0, time=time, ocatid=ocatid, tag=tag, rand=rand)
                     b.save()
                     count = len(News.objects.filter(ocatid=ocatid))
                     b = Cat.objects.get(pk=ocatid)
@@ -186,7 +196,6 @@ def news_edit(request, pk):
             error = "Access Denied"
             return render(request, 'back/error.html', {'error': error})
 
-
     news = News.objects.get(pk=pk)
     cat = SubCat.objects.all()
     if request.method == 'POST':
@@ -264,4 +273,3 @@ def news_publish(request, pk):
     news.save()
 
     return redirect('news_list')
-
