@@ -10,6 +10,7 @@ from trending.models import Trending
 from manager.models import Manager
 import random
 from random import randint
+import string
 
 
 # Create your views here.
@@ -54,7 +55,17 @@ def panel(request):
     for i in perms:
         if i.codename == "master_user": perm = 1
 
-    return render(request, 'back/home.html')
+    '''test = ['!', '@', '#', '$', '%']
+    rand = ""
+    for i in range(4):
+        rand = rand + random.choice(string.ascii_letters)
+        rand += random.choice(test)
+        rand += str(random.randint(0, 9))'''
+
+    count = News.objects.count()
+    rand = News.objects.all()[random.randint(0,count-1)]
+
+    return render(request, 'back/home.html', {'rand': rand})
 
 
 def mylogin(request):
