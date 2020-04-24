@@ -60,10 +60,12 @@ def panel(request):
     for i in range(4):
         rand = rand + random.choice(string.ascii_letters)
         rand += random.choice(test)
-        rand += str(random.randint(0, 9))'''
+        rand += str(random.randint(0, 9))
 
     count = News.objects.count()
-    rand = News.objects.all()[random.randint(0,count-1)]
+    rand = News.objects.all()[random.randint(0,count-1)]'''
+
+    rand = 1000000000
 
     return render(request, 'back/home.html', {'rand': rand})
 
