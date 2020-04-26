@@ -8,60 +8,58 @@
                         <div class="content-header">
                             <div class="header-section">
                                 <h1>
-                                    <i class="fa fa-table"></i>News List<br><small>You can add, edit and delete your data !</small>
+                                    <i class="fa fa-table"></i>Comments List<br><small>You can add, edit and delete your data !</small>
                                 </h1>
                             </div>
                         </div>
                         <ul class="breadcrumb breadcrumb-top">
-                            <li>News</li>
-                            <li><a href="/panel/news/list/">List</a></li>
+                            <li>Comments</li>
+                            <li><a href="/comments/list/">List</a></li>
                         </ul>
                         <!-- END Datatables Header -->
 
 <!-- Datatables Content -->
                         <div class="block full">
                             <div class="block-title">
-                                <h2><strong>News</strong> List</h2>
+                                <h2><strong>Comments</strong> List</h2>
                             </div>
 
                             <div class="table-responsive">
                                 <table id="example-datatable" class="table table-vcenter table-condensed table-bordered">
                                     <thead>
                                         <tr>
+                                            <th class="text-center">Comment ID</th>
                                             <th class="text-center">ID</th>
-                                            <th class="text-center">Image</th>
-                                            <th>Title</th>
+                                            <th class="text-center">News ID</th>
+                                            <th>Name</th>
                                             <th>Date & time</th>
-                                            <th>Category</th>
-                                            <th>Writer</th>
+                                            <th>Email</th>
+                                            <th>Comment</th>
                                             <th>Status</th>
-                                            <th>Vews</th>
                                             <th class="text-center">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
 
-                                    {% for cc in news %}
+                                    {% for cc in comments %}
                                         <tr>
+                                            <td class="text-center">{{cc.pk}}</td>
+                                            <td class="text-center">{{cc.news_id}}</td>
                                             <td class="text-center">{{cc.rand}}</td>
-                                            <td class="text-center"><img style="display: inline-block; height: 50px; width: 50px" src="{{cc.picurl}}" alt="avatar" class="img-circle"></td>
                                             <td>{{cc.name}}</td>
                                             <td>{{cc.date}}|{{cc.time}} </td>
-                                            <td>{{cc.catname}}</td>
-                                            <td>{{cc.writer}}</td>
-                                            {% if cc.act == 0  %}
-                                            <td> <span style="background-color: yellow">Pending</span> </td>
-                                            {% elif cc.act == 1 %}
-                                            <td> <span style="background-color: green">Confirmed</span> </td>
+                                            <td>{{cc.email}}</td>
+                                            <td>{{cc.cm}}</td>
+                                            {% if cc.status == 0 %}
+                                            <td>Pending</td>
+                                            {% elif cc.status == 1 %}
+                                            <td>Confirmed</td>
                                             {% endif %}
-                                            <td>{{cc.show}}</td>
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    <a href="{% url 'news_edit' pk=cc.pk %}" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil">Edit</i></a>
-                                                    <a href="{% url 'news_delete' pk=cc.pk %}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger"><i class="fa fa-times">Delete</i></a>
-                                                    {% if perms.main.masteruser %}
-                                                    <a href="{% url 'news_publish' pk=cc.pk %}" data-toggle="tooltip" title="Publish" class="btn btn-xs btn-default"><i class="fa fa-pencil">Publish</i></a>
-                                                    {% endif %}
+                                                    <a href="{% url 'comments_confirm' pk=cc.pk %}" data-toggle="tooltip" title="Confirm" class="btn btn-xs btn-default"><i class="fa fa-pencil">Confirm</i></a>
+                                                    <a href="{% url 'comments_del' pk=cc.pk %}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger"><i class="fa fa-times">Delete</i></a>
+
                                                 </div>
                                             </td>
                                         </tr>
