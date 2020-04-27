@@ -11,6 +11,7 @@ from manager.models import Manager
 import random
 from random import randint
 import string
+from ipware import get_client_ip
 
 
 # Create your views here.
@@ -116,8 +117,12 @@ def myregister(request):
             return render(request, 'front/msgbox.html', {'msg': msg})
 
         if len(User.objects.filter(username=uname)) == 0 and len(User.objects.filter(email=email)) == 0:
+            ip, is_routable = get_client_ip(request)
+            if ip is None:
+                ip = "0.0.0.0"
+
             user = User.objects.create_user(username=uname, email=email, password=password1)
-            b = Manager(name=name, utxt=uname, email=email)
+            b = Manager(name=name, utxt=uname, email=email, ip=ip)
             b.save()
 
     return render(request, 'front/login.html')
