@@ -12,6 +12,7 @@ import random
 from random import randint
 import string
 from ipware import get_client_ip
+from ip2geotools.databases.noncommercial import DbIpCity
 
 
 # Create your views here.
@@ -121,8 +122,15 @@ def myregister(request):
             if ip is None:
                 ip = "0.0.0.0"
 
+            try:
+                response = DbIpCity.get(ip, api_key='free')
+                country = response.country + " | " + response.city
+
+            except:
+                country = "Unknown"
+
             user = User.objects.create_user(username=uname, email=email, password=password1)
-            b = Manager(name=name, utxt=uname, email=email, ip=ip)
+            b = Manager(name=name, utxt=uname, email=email, ip=ip, country=country)
             b.save()
 
     return render(request, 'front/login.html')

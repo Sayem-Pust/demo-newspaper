@@ -9,6 +9,7 @@ class Manager(models.Model):
     utxt = models.TextField(default="")
     email = models.TextField(default="")
     ip = models.TextField(default="")
+    country = models.TextField(default="")
 
     def __str__(self):
         return self.name

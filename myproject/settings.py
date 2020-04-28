@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'newsletter',
     'django.contrib.humanize',
     'comment',
+    'blacklist',
 ]
 
 MIDDLEWARE = [
