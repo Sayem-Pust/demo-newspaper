@@ -8,6 +8,7 @@ from cat.models import Cat
 from trending.models import Trending
 import random
 from comment.models import Comment
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 # Create your views here.
@@ -40,7 +41,7 @@ def news_detail(request, word):
     return render(request, 'front/news_detail.html',
                   {'site': site, 'news': news, 'cat': cat, 'subcat': subcat, 'lastnews': lastnews, 'shownews': shownews,
                    'popnews': popnews, 'popnews2': popnews2, 'tag': tag, 'trending': trending, 'code': code,
-                   'comment': comment, 'cmcount':cmcount})
+                   'comment': comment, 'cmcount': cmcount})
 
 
 def news_detail_short(request, pk):
@@ -83,7 +84,18 @@ def news_list(request):
         news = News.objects.filter(writer=request.user)
 
     else:
-        news = News.objects.all()
+        newss = News.objects.all()
+        paginator = Paginator(newss, 2)
+        page = request.GET.get('page')
+
+        try:
+            news = paginator.page(page)
+
+        except EmptyPage:
+            news = paginator.page(paginator.num_pages)
+
+        except PageNotAnInteger:
+            news = paginator.page(1)
 
     return render(request, 'back/news_list.html', {'news': news})
 
