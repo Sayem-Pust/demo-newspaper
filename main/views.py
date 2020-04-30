@@ -27,10 +27,10 @@ def home(request):
     popnews2 = News.objects.filter(act=1).order_by('-show')[:3]
     trending = Trending.objects.all().order_by('-pk')[:5]
     random_object = Trending.objects.all()[randint(0, len(trending) - 1)]
-    print(random_object)
+    lastnews2 = News.objects.filter(act=1).order_by('-pk')[:4]
     return render(request, 'front/home.html',
                   {'site': site, 'news': news, 'cat': cat, 'subcat': subcat, 'lastnews': lastnews, 'popnews': popnews,
-                   'popnews2': popnews2, 'trending': trending})
+                   'popnews2': popnews2, 'trending': trending, 'lastnews2': lastnews2})
 
 
 def about(request):

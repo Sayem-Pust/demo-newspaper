@@ -79,6 +79,7 @@
                             {% endif %}
 
                             {% for i in news.paginator.page_range %}
+
                                 {% if news.number == i %}
                                     <a href="#" onclick="return false;" data-toggle="tooltip" title="{{Disables}}" class="btn btn-xs btn-default">{{i}}</a>
                                 {% else %}
